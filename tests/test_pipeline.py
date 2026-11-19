@@ -33,7 +33,7 @@ def test_e2e_pipeline_execution():
     assert data["sample_campaign"] is not None
 
 
-def test_n8n_webhook_ingests_new_need():
+def test_n8n_webhook_and_pair_generation_and_reset():
     resp = client.post(
         "/api/webhooks/n8n",
         json={
@@ -46,4 +46,16 @@ def test_n8n_webhook_ingests_new_need():
         },
     )
     assert resp.status_code == 200
-    assert resp.json()["status"] == "need_ingested"
+    need_id = resp.json()["need"]["id"]
+
+    d_resp = client.post("/api/dossier", json={"consultant_id": "CONS-001", "need_id": need_id})
+    assert d_resp.status_code == 200
+    assert "DOSSIER DE COMPÉTENCES" in d_resp.json()["markdown"]
+
+    p_resp = client.post("/api/prospection", json={"consultant_id": "CONS-001", "need_id": need_id})
+    assert p_resp.status_code == 200
+    assert "Toulouse Mobility" in p_resp.json()["subject"]
+
+    r_resp = client.post("/api/reset")
+    assert r_resp.status_code == 200
+    assert r_resp.json()["status"] == "reset_ok"

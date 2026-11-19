@@ -6,112 +6,370 @@
   <title>NEOSIA — Chaîne IA & Automatisation</title>
   <style>
     :root {
-      --bg: #0b1120;
-      --card: #111827;
-      --border: #1f2937;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
+      --bg: #070b14;
+      --surface: #0f172a;
+      --card: #131c31;
+      --border: #23304d;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
       --accent: #10b981;
-      --accent2: #3b82f6;
+      --accent-soft: rgba(16, 185, 129, 0.14);
+      --blue: #3b82f6;
       --warn: #f59e0b;
+      --danger: #ef4444;
     }
     * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding: 24px; }
-    .container { max-width: 1240px; margin: 0 auto; }
-    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
-    h1 { margin: 0; font-size: 1.6rem; }
-    .subtitle { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    button { cursor: pointer; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 0.9rem; transition: 0.15s; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 22px; }
+    .container { max-width: 1320px; margin: 0 auto; }
+
+    /* Header */
+    header {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--blue));
+      display: grid; place-items: center; font-weight: 800; color: #052e16; font-size: 1.1rem;
+    }
+    h1 { margin: 0; font-size: 1.45rem; letter-spacing: -0.02em; }
+    .subtitle { color: var(--muted); font-size: 0.88rem; margin-top: 3px; }
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem;
+      font-weight: 600; background: var(--accent-soft); color: var(--accent);
+      border: 1px solid rgba(16, 185, 129, 0.35); margin-left: 8px;
+    }
+
+    /* Buttons */
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button, .btn-label {
+      cursor: pointer; border: none; border-radius: 8px; padding: 9px 14px;
+      font-weight: 600; font-size: 0.85rem; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px;
+    }
     .btn-primary { background: var(--accent); color: #052e16; }
     .btn-primary:hover { filter: brightness(1.1); }
+    .btn-blue { background: var(--blue); color: #fff; }
+    .btn-blue:hover { filter: brightness(1.1); }
     .btn-secondary { background: #1e293b; color: var(--text); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: #334155; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
-    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .kpi-label { color: var(--muted); font-size: 0.8rem; }
-    .kpi-val { font-size: 1.7rem; font-weight: 700; margin-top: 6px; color: var(--accent); }
+    .btn-secondary:hover { background: #293548; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+    .btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 6px; }
+
+    /* Demo Scenario Bar */
+    .demo-bar {
+      background: linear-gradient(90deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08));
+      border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+      margin-bottom: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .demo-steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.82rem; }
+    .step-chip {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+      padding: 5px 11px; color: var(--muted); cursor: pointer; transition: 0.15s;
+    }
+    .step-chip:hover { border-color: var(--accent); color: var(--text); }
+
+    /* Connectors & KPIs */
+    .connectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .conn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; font-size: 0.83rem; }
+    .conn strong { display: block; margin-bottom: 3px; }
+    .conn span { color: var(--accent); font-size: 0.78rem; }
+
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { color: var(--muted); font-size: 0.78rem; }
+    .kpi-val { font-size: 1.65rem; font-weight: 700; margin-top: 4px; color: var(--accent); }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .tab {
+      background: transparent; color: var(--muted); border: 1px solid transparent;
+      padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;
+    }
+    .tab.active { background: var(--card); color: var(--text); border-color: var(--border); }
+
+    /* Layout & Cards */
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
-    .card h2 { margin: 0 0 12px 0; font-size: 1.08rem; display: flex; justify-content: space-between; align-items: center; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
-    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: 600; }
-    .score-pill { padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: rgba(59,130,246,0.18); color: #60a5fa; }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+    .card h2 { margin: 0 0 12px 0; font-size: 1.04rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .score-pill { padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: rgba(59,130,246,0.18); color: #60a5fa; }
     .score-high { background: rgba(16,185,129,0.2); color: #34d399; }
-    pre { background: #090d16; border: 1px solid var(--border); border-radius: 8px; padding: 14px; white-space: pre-wrap; font-size: 0.84rem; line-height: 1.45; max-height: 320px; overflow-y: auto; }
-    .connectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .conn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 0.85rem; }
-    .conn strong { display: block; margin-bottom: 4px; }
-    .conn span { color: var(--accent); font-size: 0.8rem; }
-    .rgpd-box { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 10px 12px; font-size: 0.84rem; margin-top: 10px; }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 0.74rem; background: #1e293b; color: #cbd5e1; margin: 2px 3px 2px 0; border: 1px solid var(--border); }
+
+    pre {
+      background: #070b14; border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; white-space: pre-wrap; font-size: 0.83rem; line-height: 1.48;
+      max-height: 350px; overflow-y: auto; margin: 0;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.78);
+      display: none; place-items: center; z-index: 50; padding: 16px;
+    }
+    .modal-backdrop.open { display: grid; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      width: 100%; max-width: 780px; padding: 20px; max-height: 90vh; overflow-y: auto;
+    }
+    .modal h3 { margin: 0 0 12px 0; display: flex; justify-content: space-between; align-items: center; }
+    label.field { display: block; font-size: 0.82rem; color: var(--muted); margin: 10px 0 5px; }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 11px; font-size: 0.86rem;
+    }
+    textarea { min-height: 130px; resize: vertical; font-family: monospace; }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 20px; right: 20px; background: #064e3b; color: #ecfdf5;
+      border: 1px solid var(--accent); padding: 10px 16px; border-radius: 10px;
+      font-size: 0.86rem; font-weight: 600; display: none; z-index: 100;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <div>
-        <h1>NEOSIA — Chaîne IA & Automatisation <span class="badge" id="modeBadge">Chargement...</span></h1>
-        <div class="subtitle">Sourcing CV RGPD → Rapprochement Vivier/Besoins → Dossier de Compétences → Prospection → Pilotage Hebdo</div>
+      <div class="brand">
+        <div class="logo">N</div>
+        <div>
+          <h1>NEOSIA — Chaîne IA & Automatisation <span class="badge" id="modeBadge">Initialisation...</span></h1>
+          <div class="subtitle">De la détection d'un besoin client jusqu'à l'envoi du profil adapté — <em>La performance autrement</em></div>
+        </div>
       </div>
       <div class="actions">
-        <button class="btn-secondary" onclick="importSampleCv()">+ Simuler Arrivée CV (RGPD)</button>
-        <label class="btn-secondary" style="padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">
-          Importer CV (.pdf/.txt)
-          <input type="file" id="cvFile" accept=".pdf,.txt,.md" style="display:none" onchange="uploadCv(this.files[0])" />
-        </label>
-        <button class="btn-primary" onclick="runPipeline()">▶ Exécuter la chaîne E2E</button>
+        <button class="btn-secondary" onclick="openCvModal()">Tester un CV (RGPD)</button>
+        <button class="btn-blue" onclick="openNeedModal()">+ Nouveau Besoin Client</button>
+        <button class="btn-primary" onclick="runPipeline()">▶ Exécuter E2E</button>
+        <button class="btn-ghost" onclick="resetDemo()" title="Réinitialiser la démo">↺ Reset</button>
       </div>
     </header>
 
-    <div class="connectors" id="connectorsGrid"></div>
-
-    <div class="kpis" id="kpisGrid"></div>
-
-    <div class="card" style="margin-bottom: 20px;">
-      <h2>
-        <span>Rapprochement Besoins Clients ↔ Vivier Consultants (Scoring IA)</span>
-        <span style="font-size:0.8rem;color:var(--muted)" id="rgpdSummary">RGPD-by-Design actif</span>
-      </h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Score</th>
-            <th>Consultant</th>
-            <th>Client & Besoin</th>
-            <th>Compétences alignées</th>
-            <th>Analyse</th>
-          </tr>
-        </thead>
-        <tbody id="matchesBody"></tbody>
-      </table>
-      <div id="rgpdLog" class="rgpd-box" style="display:none"></div>
+    <!-- Guided Demo Bar -->
+    <div class="demo-bar">
+      <div style="font-size:0.84rem;font-weight:700;color:var(--accent)">Parcours Démo Interactive :</div>
+      <div class="demo-steps">
+        <span class="step-chip" onclick="importSampleCv()">1. Simuler arrivée CV + RGPD</span>
+        <span class="step-chip" onclick="simulateWebhook()">2. Simuler Webhook n8n (Besoin)</span>
+        <span class="step-chip" onclick="runPipeline()">3. Scorer & Générer Livrables</span>
+        <span class="step-chip" onclick="switchTab('audit')">4. Vérifier Audit RGPD</span>
+      </div>
     </div>
 
-    <div class="grid">
+    <div class="connectors" id="connectorsGrid"></div>
+    <div class="kpis" id="kpisGrid"></div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-matching" onclick="switchTab('matching')">1. Matching & Livrables</button>
+      <button class="tab" id="tab-vivier" onclick="switchTab('vivier')">2. Vivier & Besoins</button>
+      <button class="tab" id="tab-audit" onclick="switchTab('audit')">3. Audit RGPD & Webhooks</button>
+    </div>
+
+    <!-- TAB 1: MATCHING & LIVRABLES -->
+    <div id="view-matching">
       <div class="card">
         <h2>
-          <span>Dossier de Compétences Auto-Généré</span>
-          <button class="btn-secondary" style="padding:5px 10px;font-size:0.78rem" onclick="downloadDossier()">Télécharger .md</button>
+          <span>Rapprochement Besoins Clients ↔ Vivier Consultants</span>
+          <span style="font-size:0.8rem;color:var(--muted)">Cliquez sur « Générer » sur n'importe quelle ligne pour créer son dossier + email</span>
         </h2>
-        <pre id="dossierBox">Exécutez la chaîne pour générer le dossier...</pre>
+        <table>
+          <thead>
+            <tr>
+              <th>Score</th>
+              <th>Consultant</th>
+              <th>Client & Besoin</th>
+              <th>Compétences alignées</th>
+              <th>Analyse</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="matchesBody"></tbody>
+        </table>
       </div>
-      <div class="card">
-        <h2>
-          <span>Campagne de Prospection Personnalisée</span>
-          <button class="btn-secondary" style="padding:5px 10px;font-size:0.78rem" onclick="copyEmail()">Copier Email</button>
-        </h2>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:8px;" id="campaignSubject"></div>
-        <pre id="campaignBox">Exécutez la chaîne pour générer la campagne...</pre>
-        <div style="margin-top:10px;font-size:0.82rem;color:#93c5fd;" id="linkedinBox"></div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>
+            <span id="dossierTitle">Dossier de Compétences Auto-Généré</span>
+            <button class="btn-secondary btn-sm" onclick="downloadDossier()">Télécharger .md</button>
+          </h2>
+          <pre id="dossierBox">Exécutez la chaîne pour générer le dossier...</pre>
+        </div>
+        <div class="card">
+          <h2>
+            <span id="campaignTitle">Campagne de Prospection Personnalisée</span>
+            <button class="btn-secondary btn-sm" onclick="copyEmail()">Copier Email</button>
+          </h2>
+          <div style="font-size:0.84rem;color:var(--accent);margin-bottom:8px;font-weight:600" id="campaignSubject"></div>
+          <pre id="campaignBox">Exécutez la chaîne pour générer la campagne...</pre>
+          <div style="margin-top:10px;padding:10px;background:#070b14;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;color:#93c5fd;" id="linkedinBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: VIVIER & BESOINS -->
+    <div id="view-vivier" style="display:none">
+      <div class="grid">
+        <div class="card">
+          <h2>Vivier Consultants (Sync BoondManager)</h2>
+          <div id="consultantsList"></div>
+        </div>
+        <div class="card">
+          <h2>Besoins Clients Actifs (Boond / CRM / M365)</h2>
+          <div id="needsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: AUDIT RGPD & WEBHOOKS -->
+    <div id="view-audit" style="display:none">
+      <div class="grid">
+        <div class="card">
+          <h2>Journal d'Audit RGPD-by-Design</h2>
+          <div id="rgpdHistory" style="font-size:0.85rem;color:var(--muted)">Aucun CV importé pour le moment. Cliquez sur « 1. Simuler arrivée CV + RGPD » ou « Tester un CV ».</div>
+        </div>
+        <div class="card">
+          <h2>Testeur API & Webhook n8n / Make / Power Automate</h2>
+          <p style="font-size:0.84rem;color:var(--muted);margin-top:0">
+            Endpoint prêt à recevoir des besoins en temps réel depuis n8n, Make ou Microsoft Power Automate :
+          </p>
+          <pre>POST /api/webhooks/n8n
+{
+  "client_name": "Airbus Protect Toulouse",
+  "title": "Ingénieur IA & Cybersécurité",
+  "required_skills": ["Python", "LLM", "RGPD", "Docker"],
+  "max_tjm_eur": 640,
+  "contact_name": "Claire Martin"
+}</pre>
+          <div style="margin-top:12px;">
+            <button class="btn-blue" onclick="simulateWebhook()">⚡ Envoyer ce Webhook maintenant</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- MODAL: TESTER UN CV + DIFF RGPD -->
+  <div class="modal-backdrop" id="cvModal">
+    <div class="modal">
+      <h3>
+        <span>Tester le Sourcing CV & Anonymisation RGPD</span>
+        <button class="btn-ghost btn-sm" onclick="closeCvModal()">Fermer</button>
+      </h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <button class="btn-secondary btn-sm" onclick="fillSampleCv()">Charger CV d'exemple</button>
+        <label class="btn-secondary btn-sm btn-label">
+          Importer fichier (.pdf / .txt)
+          <input type="file" accept=".pdf,.txt,.md" style="display:none" onchange="uploadCvFromModal(this.files[0])" />
+        </label>
+      </div>
+      <label class="field">Contenu brut du CV (avec email / téléphone pour tester le masquage RGPD) :</label>
+      <textarea id="cvTextInput" placeholder="Collez un CV ici..."></textarea>
+      <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:8px;">
+        <button class="btn-primary" onclick="submitCustomCv()">Analyser & Anonymiser (RGPD)</button>
+      </div>
+      <div id="rgpdDiffResult" style="display:none;margin-top:14px;">
+        <div class="grid" style="margin-bottom:0">
+          <div>
+            <label class="field">Avant (Données brutes)</label>
+            <pre id="diffBefore" style="max-height:180px"></pre>
+          </div>
+          <div>
+            <label class="field">Après (Anonymisé avant appel LLM)</label>
+            <pre id="diffAfter" style="max-height:180px;border-color:var(--accent)"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NOUVEAU BESOIN CLIENT -->
+  <div class="modal-backdrop" id="needModal">
+    <div class="modal" style="max-width:540px">
+      <h3>
+        <span>Ajouter un Besoin Client</span>
+        <button class="btn-ghost btn-sm" onclick="closeNeedModal()">Fermer</button>
+      </h3>
+      <label class="field">Client</label>
+      <input type="text" id="needClient" value="Thales Alenia Space Toulouse" />
+      <label class="field">Intitulé du besoin</label>
+      <input type="text" id="needTitle" value="Architecte LLM & Automatisation Python" />
+      <label class="field">Compétences requises (séparées par des virgules)</label>
+      <input type="text" id="needSkills" value="Python, FastAPI, LLM, Docker, RGPD" />
+      <div class="grid" style="margin-bottom:0;gap:10px">
+        <div>
+          <label class="field">TJM Max (€)</label>
+          <input type="number" id="needTjm" value="640" />
+        </div>
+        <div>
+          <label class="field">Source</label>
+          <select id="needSource">
+            <option value="BoondManager">BoondManager</option>
+            <option value="CRM">CRM</option>
+            <option value="M365_Email">Microsoft 365 Email</option>
+          </select>
+        </div>
+      </div>
+      <label class="field">Contact décideur</label>
+      <input type="text" id="needContact" value="Antoine Mercier" />
+      <div style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px;">
+        <button class="btn-primary" onclick="submitNewNeed()">Ingérer le besoin & Re-scorer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
   <script>
     let lastResult = null;
+    let currentDossier = null;
+    let currentCampaign = null;
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3200);
+    }
+
+    function switchTab(name) {
+      ['matching', 'vivier', 'audit'].forEach(t => {
+        document.getElementById('view-' + t).style.display = (t === name) ? 'block' : 'none';
+        document.getElementById('tab-' + t).classList.toggle('active', t === name);
+      });
+      if (name === 'vivier') loadState();
+    }
+
+    async function loadState() {
+      const res = await fetch('/api/state');
+      const state = await res.json();
+      document.getElementById('consultantsList').innerHTML = state.consultants.map(c => `
+        <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+          <strong>${c.full_name}</strong> <span class="tag">${c.pseudo_id}</span>
+          <div style="font-size:0.82rem;color:var(--muted);margin:3px 0">${c.title} • ${c.years_exp} ans • ${c.tjm_eur}€/j • ${c.availability}</div>
+          <div>${c.skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('needsList').innerHTML = state.needs.map(n => `
+        <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+          <strong>${n.client_name}</strong> <span class="tag">${n.source}</span>
+          <div style="font-size:0.85rem;margin:3px 0">${n.title}</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:4px">TJM max ${n.max_tjm_eur}€ • Contact : ${n.contact_name}</div>
+          <div>${n.required_skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+        </div>
+      `).join('');
+    }
 
     async function runPipeline() {
       const res = await fetch('/api/run-e2e', { method: 'POST' });
@@ -119,10 +377,9 @@
       lastResult = data;
       document.getElementById('modeBadge').textContent = data.mode === 'gemini_live' ? 'Gemini 2.5 Live' : 'Moteur Déterministe';
 
-      const connHtml = Object.entries(data.kpis.connector_status).map(([k, v]) =>
+      document.getElementById('connectorsGrid').innerHTML = Object.entries(data.kpis.connector_status).map(([k, v]) =>
         `<div class="conn"><strong>${k}</strong><span>● ${v}</span></div>`
       ).join('');
-      document.getElementById('connectorsGrid').innerHTML = connHtml;
 
       const k = data.kpis;
       const kpis = [
@@ -141,27 +398,57 @@
         <tr>
           <td><span class="score-pill ${m.score >= 80 ? 'score-high' : ''}">${m.score}%</span></td>
           <td><strong>${m.consultant_name}</strong></td>
-          <td>${m.client_name}<br><span style="color:var(--muted);font-size:0.8rem">${m.need_title}</span></td>
-          <td>${m.matched_skills.join(', ')}</td>
-          <td style="color:var(--muted);font-size:0.8rem">${m.rationale}</td>
+          <td>${m.client_name}<br><span style="color:var(--muted);font-size:0.79rem">${m.need_title}</span></td>
+          <td>${m.matched_skills.map(s => `<span class="tag">${s}</span>`).join('')}</td>
+          <td style="color:var(--muted);font-size:0.79rem">${m.rationale}</td>
+          <td><button class="btn-secondary btn-sm" onclick="generatePair('${m.consultant_id}','${m.need_id}')">Générer</button></td>
         </tr>
       `).join('');
 
       if (data.rgpd_events && data.rgpd_events.length > 0) {
-        const latest = data.rgpd_events[0];
-        const box = document.getElementById('rgpdLog');
-        box.style.display = 'block';
-        box.innerHTML = `<strong>Audit RGPD :</strong> ${latest.action} — ${latest.details}`;
+        document.getElementById('rgpdHistory').innerHTML = data.rgpd_events.map(e => `
+          <div style="padding:10px;border:1px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.06);border-radius:8px;margin-bottom:8px">
+            <strong style="color:var(--warn)">${e.action}</strong> <span style="font-size:0.76rem;color:var(--muted)">(${e.timestamp})</span>
+            <div style="margin-top:4px;color:var(--text)">${e.details}</div>
+          </div>
+        `).join('');
       }
 
-      if (data.sample_dossier) {
-        document.getElementById('dossierBox').textContent = data.sample_dossier.markdown;
-      }
-      if (data.sample_campaign) {
-        document.getElementById('campaignSubject').textContent = 'Objet : ' + data.sample_campaign.subject;
-        document.getElementById('campaignBox').textContent = data.sample_campaign.email_body;
-        document.getElementById('linkedinBox').textContent = 'Message LinkedIn suggéré : ' + data.sample_campaign.linkedin_dm;
-      }
+      if (data.sample_dossier) renderDossier(data.sample_dossier);
+      if (data.sample_campaign) renderCampaign(data.sample_campaign);
+      loadState();
+    }
+
+    function renderDossier(d) {
+      currentDossier = d;
+      document.getElementById('dossierTitle').textContent = `Dossier — ${d.consultant_name}`;
+      document.getElementById('dossierBox').textContent = d.markdown;
+    }
+
+    function renderCampaign(c) {
+      currentCampaign = c;
+      document.getElementById('campaignTitle').textContent = `Prospection — ${c.client_name}`;
+      document.getElementById('campaignSubject').textContent = 'Objet : ' + c.subject;
+      document.getElementById('campaignBox').textContent = c.email_body;
+      document.getElementById('linkedinBox').textContent = 'Message LinkedIn : ' + c.linkedin_dm;
+    }
+
+    async function generatePair(consultantId, needId) {
+      const [dRes, pRes] = await Promise.all([
+        fetch('/api/dossier', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ consultant_id: consultantId, need_id: needId })
+        }),
+        fetch('/api/prospection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ consultant_id: consultantId, need_id: needId })
+        })
+      ]);
+      renderDossier(await dRes.json());
+      renderCampaign(await pRes.json());
+      toast('Dossier de compétences et campagne générés !');
     }
 
     async function importSampleCv() {
@@ -172,30 +459,108 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(sData)
       });
+      toast('CV Camille Lefèvre importé et anonymisé (RGPD) !');
       await runPipeline();
     }
 
-    async function uploadCv(file) {
+    async function simulateWebhook() {
+      await fetch('/api/webhooks/n8n', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'new_client_need',
+          client_name: 'Airbus Protect Toulouse',
+          title: 'Ingénieur IA & Cybersécurité',
+          required_skills: ['Python', 'LLM', 'RGPD', 'Docker'],
+          max_tjm_eur: 640,
+          contact_name: 'Claire Martin',
+          source: 'CRM'
+        })
+      });
+      toast('Webhook n8n reçu : nouveau besoin Airbus Protect ajouté !');
+      await runPipeline();
+    }
+
+    async function resetDemo() {
+      await fetch('/api/reset', { method: 'POST' });
+      document.getElementById('rgpdHistory').textContent = 'Aucun CV importé pour le moment.';
+      toast('Démo réinitialisée.');
+      await runPipeline();
+    }
+
+    /* Modals */
+    function openCvModal() {
+      document.getElementById('cvModal').classList.add('open');
+      if (!document.getElementById('cvTextInput').value) fillSampleCv();
+    }
+    function closeCvModal() { document.getElementById('cvModal').classList.remove('open'); }
+    async function fillSampleCv() {
+      const r = await fetch('/api/sample-cv');
+      const d = await r.json();
+      document.getElementById('cvTextInput').value = d.content;
+    }
+    async function submitCustomCv() {
+      const content = document.getElementById('cvTextInput').value.trim();
+      if (!content) return;
+      const res = await fetch('/api/cv/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: 'cv_personnalise.txt', content })
+      });
+      const data = await res.json();
+      document.getElementById('rgpdDiffResult').style.display = 'block';
+      document.getElementById('diffBefore').textContent = data.original_preview;
+      document.getElementById('diffAfter').textContent = data.sanitized_preview;
+      toast(`CV structuré (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
+      await runPipeline();
+    }
+    async function uploadCvFromModal(file) {
       if (!file) return;
       const fd = new FormData();
       fd.append('file', file);
-      await fetch('/api/cv/upload', { method: 'POST', body: fd });
+      const res = await fetch('/api/cv/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      document.getElementById('cvTextInput').value = data.original_preview;
+      document.getElementById('rgpdDiffResult').style.display = 'block';
+      document.getElementById('diffBefore').textContent = data.original_preview;
+      document.getElementById('diffAfter').textContent = data.sanitized_preview;
+      toast(`Fichier ${file.name} analysé (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
+      await runPipeline();
+    }
+
+    function openNeedModal() { document.getElementById('needModal').classList.add('open'); }
+    function closeNeedModal() { document.getElementById('needModal').classList.remove('open'); }
+    async function submitNewNeed() {
+      const skills = document.getElementById('needSkills').value.split(',').map(s => s.trim()).filter(Boolean);
+      await fetch('/api/needs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_name: document.getElementById('needClient').value,
+          title: document.getElementById('needTitle').value,
+          required_skills: skills,
+          max_tjm_eur: parseInt(document.getElementById('needTjm').value || '600', 10),
+          contact_name: document.getElementById('needContact').value,
+          source: document.getElementById('needSource').value
+        })
+      });
+      closeNeedModal();
+      toast('Nouveau besoin client ingéré et scoré !');
       await runPipeline();
     }
 
     function downloadDossier() {
-      if (!lastResult || !lastResult.sample_dossier) return;
-      const blob = new Blob([lastResult.sample_dossier.markdown], { type: 'text/markdown' });
+      if (!currentDossier) return;
+      const blob = new Blob([currentDossier.markdown], { type: 'text/markdown' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `Dossier_${lastResult.sample_dossier.consultant_name.replace(/\s+/g, '_')}.md`;
+      a.download = `Dossier_${currentDossier.consultant_name.replace(/\s+/g, '_')}.md`;
       a.click();
     }
-
     function copyEmail() {
-      if (!lastResult || !lastResult.sample_campaign) return;
-      navigator.clipboard.writeText(lastResult.sample_campaign.email_body);
-      alert('Email de prospection copié !');
+      if (!currentCampaign) return;
+      navigator.clipboard.writeText(currentCampaign.email_body);
+      toast('Email de prospection copié !');
     }
 
     runPipeline();
