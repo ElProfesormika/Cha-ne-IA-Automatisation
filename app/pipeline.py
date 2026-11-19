@@ -114,7 +114,7 @@ def parse_and_score_cv(
     uid = abs(hash(f"{filename}:{sanitized_text[:300]}")) % 9000 + 1000
     profile = ConsultantProfile(
         id=f"CONS-IMP-{uid}",
-        pseudo_id=f"NEOSIA-IMP-{uid % 900 + 100}",
+        pseudo_id=f"TF-IMP-{uid % 900 + 100}",
         full_name=candidate_name,
         title=title,
         years_exp=years_exp,
@@ -174,11 +174,11 @@ def match_consultants_to_needs(
 def generate_dossier_competences(
     consultant: ConsultantProfile, need: ClientNeed
 ) -> DossierCompetences:
-    """Génère un Dossier de Compétences formaté NEOSIA prêt à envoyer."""
+    """Génère un Dossier de Compétences formaté TalentFlow AI prêt à envoyer."""
     skills_badges = " · ".join(f"`{s}`" for s in consultant.skills)
     exp_md = "\n".join(f"- {e}" for e in (consultant.experiences or [consultant.summary]))
 
-    markdown = f"""# DOSSIER DE COMPÉTENCES — NEOSIA
+    markdown = f"""# DOSSIER DE COMPÉTENCES — TALENTFLOW AI
 **La performance autrement**
 
 ---
@@ -204,7 +204,7 @@ def generate_dossier_competences(
 {exp_md}
 
 ---
-*Document généré automatiquement par la chaîne IA NEOSIA (conforme RGPD — données personnelles de contact filtrées).*
+*Document généré automatiquement par TalentFlow AI (conforme RGPD — données personnelles de contact filtrées).*
 """
     return DossierCompetences(
         consultant_id=consultant.id,
@@ -222,8 +222,8 @@ def generate_prospection_campaign(
     subject = f"[{need.client_name}] Profil {match.consultant_name} disponible ({match.score}% match) — {need.title}"
 
     gemini_prompt = (
-        f"Rédige en français un court email de prospection B2B (max 110 mots) de la part de NEOSIA "
-        f"(vision : 'la performance autrement') adressé à {need.contact_name} ({need.contact_role} chez {need.client_name}). "
+        f"Rédige en français un court email de prospection B2B (max 110 mots) de la part de TalentFlow AI "
+        f"adressé à {need.contact_name} ({need.contact_role} chez {need.client_name}). "
         f"Objet du besoin : {need.title}. Profil proposé : {match.consultant_name} (score {match.score}%, "
         f"compétences clés : {top_skills}). Ton direct, pragmatique, orienté ROI. Pas de blabla."
     )
@@ -235,13 +235,13 @@ def generate_prospection_campaign(
         f"et identifié un profil disponible qui correspond à {match.score}% à vos critères ({top_skills}).\n\n"
         f"• Consultant(e) : {match.consultant_name}\n"
         f"• Points forts : {match.rationale}\n\n"
-        f"Je vous joins son Dossier de Compétences NEOSIA anonymisé et reste disponible pour un échange rapide de 15 min cette semaine.\n\n"
-        f"Bien cordialement,\nL'équipe NEOSIA — Toulouse"
+        f"Je vous joins son Dossier de Compétences anonymisé et reste disponible pour un échange rapide de 15 min cette semaine.\n\n"
+        f"Bien cordialement,\nL'équipe TalentFlow AI — Toulouse"
     )
 
     linkedin_dm = (
         f"Bonjour {need.contact_name}, j'ai vu votre recherche sur « {need.title} ». "
-        f"Nous avons chez NEOSIA un profil {top_skills} disponible rapidement (match {match.score}%). "
+        f"Nous avons un profil {top_skills} disponible rapidement (match {match.score}%). "
         f"Puis-je vous transmettre son dossier de compétences ?"
     )
 

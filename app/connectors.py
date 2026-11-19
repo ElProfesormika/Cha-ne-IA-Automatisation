@@ -7,7 +7,7 @@ from data.sample_data import get_initial_consultants, get_initial_needs
 
 class ToolsConnectorHub:
     """
-    Hub d'intégration unifié pour les outils NEOSIA :
+    Hub d'intégration unifié pour TalentFlow AI :
     - BoondManager (vivier consultants & besoins)
     - CRM (opportunités & contacts)
     - Microsoft 365 (détection de besoins par email / Teams)

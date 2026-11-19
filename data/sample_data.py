@@ -22,7 +22,7 @@ def get_initial_consultants() -> List[ConsultantProfile]:
     return [
         ConsultantProfile(
             id="CONS-001",
-            pseudo_id="NEOSIA-C01",
+            pseudo_id="TF-C01",
             full_name="Lucas Moreau",
             title="Architecte Cloud & IA Générative",
             years_exp=7,
@@ -38,7 +38,7 @@ def get_initial_consultants() -> List[ConsultantProfile]:
         ),
         ConsultantProfile(
             id="CONS-002",
-            pseudo_id="NEOSIA-C02",
+            pseudo_id="TF-C02",
             full_name="Sarah Benali",
             title="Consultante Automatisation & Data",
             years_exp=4,
@@ -54,7 +54,7 @@ def get_initial_consultants() -> List[ConsultantProfile]:
         ),
         ConsultantProfile(
             id="CONS-003",
-            pseudo_id="NEOSIA-C03",
+            pseudo_id="TF-C03",
             full_name="Thomas Girard",
             title="Data Engineer & MLOps",
             years_exp=5,
@@ -70,7 +70,7 @@ def get_initial_consultants() -> List[ConsultantProfile]:
         ),
         ConsultantProfile(
             id="CONS-004",
-            pseudo_id="NEOSIA-C04",
+            pseudo_id="TF-C04",
             full_name="Inès Laurent",
             title="Chef de Projet CRM & BoondManager",
             years_exp=6,

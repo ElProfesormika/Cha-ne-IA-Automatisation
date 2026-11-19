@@ -73,9 +73,11 @@ class WeeklyKpis(BaseModel):
     active_needs: int
     qualified_matches: int
     avg_match_score: float
+    needs_coverage_pct: float
     dossiers_generated: int
     campaigns_ready: int
     estimated_hours_saved: float
+    estimated_roi_eur: int
     connector_status: Dict[str, str]
 
 

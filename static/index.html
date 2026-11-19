@@ -3,122 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NEOSIA — Chaîne IA & Automatisation</title>
+  <title>TalentFlow AI — Chaîne IA & Automatisation</title>
   <style>
     :root {
-      --bg: #070b14;
-      --surface: #0f172a;
-      --card: #131c31;
-      --border: #23304d;
-      --text: #f1f5f9;
+      --bg: #050811;
+      --surface: #0c1322;
+      --card: rgba(17, 25, 45, 0.88);
+      --border: #22304d;
+      --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #10b981;
       --accent-soft: rgba(16, 185, 129, 0.14);
       --blue: #3b82f6;
+      --purple: #8b5cf6;
       --warn: #f59e0b;
-      --danger: #ef4444;
     }
     * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, sans-serif; }
-    body { margin: 0; background: var(--bg); color: var(--text); padding: 22px; }
-    .container { max-width: 1320px; margin: 0 auto; }
+    body {
+      margin: 0; color: var(--text); padding: 24px;
+      background:
+        radial-gradient(900px 420px at 10% -5%, rgba(16,185,129,0.12), transparent 60%),
+        radial-gradient(800px 400px at 90% 0%, rgba(59,130,246,0.12), transparent 60%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .container { max-width: 1340px; margin: 0 auto; }
 
     /* Header */
     header {
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
       gap: 16px; margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
     .logo {
-      width: 42px; height: 42px; border-radius: 10px;
+      width: 46px; height: 46px; border-radius: 12px;
       background: linear-gradient(135deg, var(--accent), var(--blue));
-      display: grid; place-items: center; font-weight: 800; color: #052e16; font-size: 1.1rem;
+      display: grid; place-items: center; font-weight: 900; color: #042f2e; font-size: 1.15rem;
+      box-shadow: 0 8px 24px rgba(16,185,129,0.25);
     }
-    h1 { margin: 0; font-size: 1.45rem; letter-spacing: -0.02em; }
+    h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.025em; }
     .subtitle { color: var(--muted); font-size: 0.88rem; margin-top: 3px; }
     .badge {
-      display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem;
+      display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem;
       font-weight: 600; background: var(--accent-soft); color: var(--accent);
-      border: 1px solid rgba(16, 185, 129, 0.35); margin-left: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.35); margin-left: 8px; vertical-align: middle;
     }
 
     /* Buttons */
     .actions { display: flex; gap: 8px; flex-wrap: wrap; }
     button, .btn-label {
-      cursor: pointer; border: none; border-radius: 8px; padding: 9px 14px;
-      font-weight: 600; font-size: 0.85rem; transition: 0.15s; display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer; border: none; border-radius: 9px; padding: 9px 15px;
+      font-weight: 600; font-size: 0.84rem; transition: all 0.16s ease;
+      display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-primary { background: var(--accent); color: #052e16; }
-    .btn-primary:hover { filter: brightness(1.1); }
-    .btn-blue { background: var(--blue); color: #fff; }
-    .btn-blue:hover { filter: brightness(1.1); }
+    .btn-primary { background: linear-gradient(135deg, #10b981, #059669); color: #022c22; box-shadow: 0 4px 14px rgba(16,185,129,0.25); }
+    .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    .btn-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+    .btn-blue:hover { transform: translateY(-1px); filter: brightness(1.08); }
     .btn-secondary { background: #1e293b; color: var(--text); border: 1px solid var(--border); }
-    .btn-secondary:hover { background: #293548; }
+    .btn-secondary:hover { background: #293548; border-color: #3b4f7a; }
     .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
     .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-    .btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 6px; }
+    .btn-sm { padding: 5px 10px; font-size: 0.76rem; border-radius: 7px; }
 
     /* Demo Scenario Bar */
     .demo-bar {
-      background: linear-gradient(90deg, rgba(16,185,129,0.08), rgba(59,130,246,0.08));
-      border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+      background: linear-gradient(90deg, rgba(16,185,129,0.09), rgba(59,130,246,0.09));
+      border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px;
       margin-bottom: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;
+      backdrop-filter: blur(8px);
     }
     .demo-steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.82rem; }
     .step-chip {
       background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
-      padding: 5px 11px; color: var(--muted); cursor: pointer; transition: 0.15s;
+      padding: 6px 12px; color: var(--muted); cursor: pointer; transition: 0.15s;
     }
-    .step-chip:hover { border-color: var(--accent); color: var(--text); }
+    .step-chip:hover { border-color: var(--accent); color: var(--text); background: rgba(16,185,129,0.1); }
 
     /* Connectors & KPIs */
-    .connectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 18px; }
-    .conn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 14px; font-size: 0.83rem; }
+    .connectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .conn {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 0.83rem; backdrop-filter: blur(8px);
+    }
     .conn strong { display: block; margin-bottom: 3px; }
     .conn span { color: var(--accent); font-size: 0.78rem; }
 
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-    .kpi-label { color: var(--muted); font-size: 0.78rem; }
-    .kpi-val { font-size: 1.65rem; font-weight: 700; margin-top: 4px; color: var(--accent); }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .kpi {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px 16px; position: relative; overflow: hidden; backdrop-filter: blur(8px);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .kpi:hover { transform: translateY(-2px); border-color: #364b75; }
+    .kpi-label { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+    .kpi-val { font-size: 1.6rem; font-weight: 800; margin-top: 5px; color: var(--accent); letter-spacing: -0.02em; }
+    .kpi-sub { font-size: 0.74rem; color: var(--muted); margin-top: 3px; }
 
     /* Tabs */
     .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .tab {
       background: transparent; color: var(--muted); border: 1px solid transparent;
-      padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem;
+      padding: 8px 15px; border-radius: 8px; font-weight: 600; font-size: 0.87rem;
     }
     .tab.active { background: var(--card); color: var(--text); border-color: var(--border); }
 
     /* Layout & Cards */
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
     @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
-    .card h2 { margin: 0 0 12px 0; font-size: 1.04rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px; margin-bottom: 18px; backdrop-filter: blur(8px);
+    }
+    .card h2 {
+      margin: 0 0 14px 0; font-size: 1.05rem; display: flex;
+      justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    }
 
     /* Table */
     table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
+    th, td { text-align: left; padding: 11px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    th { color: var(--muted); font-weight: 600; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    tr:hover td { background: rgba(255,255,255,0.025); }
+    .score-wrap { display: flex; align-items: center; gap: 8px; min-width: 110px; }
     .score-pill { padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: rgba(59,130,246,0.18); color: #60a5fa; }
     .score-high { background: rgba(16,185,129,0.2); color: #34d399; }
-    .tag { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 0.74rem; background: #1e293b; color: #cbd5e1; margin: 2px 3px 2px 0; border: 1px solid var(--border); }
+    .bar-bg { flex: 1; height: 6px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--accent)); border-radius: 999px; }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 0.73rem; background: #1e293b; color: #cbd5e1; margin: 2px 3px 2px 0; border: 1px solid var(--border); }
 
     pre {
-      background: #070b14; border: 1px solid var(--border); border-radius: 8px;
-      padding: 14px; white-space: pre-wrap; font-size: 0.83rem; line-height: 1.48;
-      max-height: 350px; overflow-y: auto; margin: 0;
+      background: #070b14; border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; white-space: pre-wrap; font-size: 0.83rem; line-height: 1.5;
+      max-height: 360px; overflow-y: auto; margin: 0;
     }
+    .dossier-rendered {
+      background: #070b14; border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 18px; font-size: 0.85rem; line-height: 1.55; max-height: 380px; overflow-y: auto;
+    }
+    .dossier-rendered h1 { font-size: 1.15rem; color: var(--accent); margin: 0 0 4px; }
+    .dossier-rendered h2 { font-size: 0.98rem; color: #93c5fd; margin: 12px 0 6px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .dossier-rendered h3 { font-size: 0.88rem; color: var(--text); margin: 10px 0 4px; }
+    .dossier-rendered ul { margin: 4px 0 8px 18px; padding: 0; }
+    .dossier-rendered code { background: #1e293b; padding: 2px 6px; border-radius: 5px; font-size: 0.78rem; color: #a7f3d0; }
 
     /* Modals */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.78);
-      display: none; place-items: center; z-index: 50; padding: 16px;
+      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.8);
+      display: none; place-items: center; z-index: 50; padding: 16px; backdrop-filter: blur(4px);
     }
     .modal-backdrop.open { display: grid; }
     .modal {
       background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      width: 100%; max-width: 780px; padding: 20px; max-height: 90vh; overflow-y: auto;
+      width: 100%; max-width: 800px; padding: 22px; max-height: 90vh; overflow-y: auto;
     }
     .modal h3 { margin: 0 0 12px 0; display: flex; justify-content: space-between; align-items: center; }
     label.field { display: block; font-size: 0.82rem; color: var(--muted); margin: 10px 0 5px; }
@@ -128,12 +165,11 @@
     }
     textarea { min-height: 130px; resize: vertical; font-family: monospace; }
 
-    /* Toast */
     #toast {
       position: fixed; bottom: 20px; right: 20px; background: #064e3b; color: #ecfdf5;
       border: 1px solid var(--accent); padding: 10px 16px; border-radius: 10px;
       font-size: 0.86rem; font-weight: 600; display: none; z-index: 100;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
     }
   </style>
 </head>
@@ -141,10 +177,10 @@
   <div class="container">
     <header>
       <div class="brand">
-        <div class="logo">N</div>
+        <div class="logo">TF</div>
         <div>
-          <h1>NEOSIA — Chaîne IA & Automatisation <span class="badge" id="modeBadge">Initialisation...</span></h1>
-          <div class="subtitle">De la détection d'un besoin client jusqu'à l'envoi du profil adapté — <em>La performance autrement</em></div>
+          <h1>TalentFlow AI <span class="badge" id="modeBadge">Initialisation...</span></h1>
+          <div class="subtitle">Chaîne automatisée IA : Sourcing CV RGPD → Matching → Dossier de Compétences → Prospection → KPIs</div>
         </div>
       </div>
       <div class="actions">
@@ -155,7 +191,6 @@
       </div>
     </header>
 
-    <!-- Guided Demo Bar -->
     <div class="demo-bar">
       <div style="font-size:0.84rem;font-weight:700;color:var(--accent)">Parcours Démo Interactive :</div>
       <div class="demo-steps">
@@ -175,17 +210,17 @@
       <button class="tab" id="tab-audit" onclick="switchTab('audit')">3. Audit RGPD & Webhooks</button>
     </div>
 
-    <!-- TAB 1: MATCHING & LIVRABLES -->
+    <!-- TAB 1 -->
     <div id="view-matching">
       <div class="card">
         <h2>
           <span>Rapprochement Besoins Clients ↔ Vivier Consultants</span>
-          <span style="font-size:0.8rem;color:var(--muted)">Cliquez sur « Générer » sur n'importe quelle ligne pour créer son dossier + email</span>
+          <span style="font-size:0.8rem;color:var(--muted)">Cliquez sur « Générer » sur n'importe quelle ligne pour produire son dossier + campagne</span>
         </h2>
         <table>
           <thead>
             <tr>
-              <th>Score</th>
+              <th>Score Match</th>
               <th>Consultant</th>
               <th>Client & Besoin</th>
               <th>Compétences alignées</th>
@@ -201,9 +236,12 @@
         <div class="card">
           <h2>
             <span id="dossierTitle">Dossier de Compétences Auto-Généré</span>
-            <button class="btn-secondary btn-sm" onclick="downloadDossier()">Télécharger .md</button>
+            <div style="display:flex;gap:6px">
+              <button class="btn-secondary btn-sm" onclick="printDossier()">Imprimer / PDF</button>
+              <button class="btn-secondary btn-sm" onclick="downloadDossier()">Télécharger .md</button>
+            </div>
           </h2>
-          <pre id="dossierBox">Exécutez la chaîne pour générer le dossier...</pre>
+          <div id="dossierBox" class="dossier-rendered">Exécutez la chaîne pour générer le dossier...</div>
         </div>
         <div class="card">
           <h2>
@@ -212,12 +250,12 @@
           </h2>
           <div style="font-size:0.84rem;color:var(--accent);margin-bottom:8px;font-weight:600" id="campaignSubject"></div>
           <pre id="campaignBox">Exécutez la chaîne pour générer la campagne...</pre>
-          <div style="margin-top:10px;padding:10px;background:#070b14;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;color:#93c5fd;" id="linkedinBox"></div>
+          <div style="margin-top:10px;padding:10px 12px;background:#070b14;border:1px solid var(--border);border-radius:8px;font-size:0.82rem;color:#93c5fd;" id="linkedinBox"></div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: VIVIER & BESOINS -->
+    <!-- TAB 2 -->
     <div id="view-vivier" style="display:none">
       <div class="grid">
         <div class="card">
@@ -231,7 +269,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: AUDIT RGPD & WEBHOOKS -->
+    <!-- TAB 3 -->
     <div id="view-audit" style="display:none">
       <div class="grid">
         <div class="card">
@@ -259,7 +297,7 @@
     </div>
   </div>
 
-  <!-- MODAL: TESTER UN CV + DIFF RGPD -->
+  <!-- MODAL CV -->
   <div class="modal-backdrop" id="cvModal">
     <div class="modal">
       <h3>
@@ -294,7 +332,7 @@
     </div>
   </div>
 
-  <!-- MODAL: NOUVEAU BESOIN CLIENT -->
+  <!-- MODAL NEED -->
   <div class="modal-backdrop" id="needModal">
     <div class="modal" style="max-width:540px">
       <h3>
@@ -332,7 +370,6 @@
   <div id="toast"></div>
 
   <script>
-    let lastResult = null;
     let currentDossier = null;
     let currentCampaign = null;
 
@@ -341,6 +378,40 @@
       t.textContent = msg;
       t.style.display = 'block';
       setTimeout(() => { t.style.display = 'none'; }, 3200);
+    }
+
+    function mdToHtml(md) {
+      const esc = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const lines = esc.split('\n');
+      let html = '';
+      let inList = false;
+      for (const raw of lines) {
+        let ln = raw
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/`(.+?)`/g, '<code>$1</code>');
+        if (ln.startsWith('# ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h1>${ln.slice(2)}</h1>`;
+        } else if (ln.startsWith('## ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h2>${ln.slice(3)}</h2>`;
+        } else if (ln.startsWith('### ')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<h3>${ln.slice(4)}</h3>`;
+        } else if (ln.startsWith('---')) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<hr style="border:none;border-top:1px solid #22304d;margin:10px 0">';
+        } else if (ln.startsWith('- ')) {
+          if (!inList) { html += '<ul>'; inList = true; }
+          html += `<li>${ln.slice(2)}</li>`;
+        } else if (ln.trim()) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += `<p style="margin:4px 0">${ln}</p>`;
+        }
+      }
+      if (inList) html += '</ul>';
+      return html;
     }
 
     function switchTab(name) {
@@ -375,7 +446,6 @@
     async function runPipeline() {
       const res = await fetch('/api/run-e2e', { method: 'POST' });
       const data = await res.json();
-      lastResult = data;
       document.getElementById('modeBadge').textContent = data.mode === 'gemini_live' ? 'Gemini 2.5 Live' : 'Moteur Déterministe';
 
       document.getElementById('connectorsGrid').innerHTML = Object.entries(data.kpis.connector_status).map(([k, v]) =>
@@ -384,22 +454,27 @@
 
       const k = data.kpis;
       const kpis = [
-        ['CVs traités (hebdo)', k.cvs_processed],
-        ['PII masquées (RGPD)', k.rgpd_pii_masked],
-        ['Besoins actifs', k.active_needs],
-        ['Matchs qualifiés (≥65%)', k.qualified_matches],
-        ['Score moyen', k.avg_match_score + '%'],
-        ['Temps économisé', k.estimated_hours_saved + ' h']
+        ['CVs traités (hebdo)', k.cvs_processed, 'Vivier actif synchronisé'],
+        ['PII masquées (RGPD)', k.rgpd_pii_masked, 'Zero-leak avant LLM'],
+        ['Besoins actifs', k.active_needs, `Couverture : ${k.needs_coverage_pct}% (≥70%)`],
+        ['Matchs qualifiés', k.qualified_matches, `Score moyen : ${k.avg_match_score}%`],
+        ['Livrables générés', `${k.dossiers_generated} / ${k.campaigns_ready}`, 'Dossiers / Campagnes'],
+        ['Gain hebdo estimé', `${k.estimated_hours_saved} h`, `~ ${k.estimated_roi_eur} € économisés/sem.`]
       ];
-      document.getElementById('kpisGrid').innerHTML = kpis.map(([l, v]) =>
-        `<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-val">${v}</div></div>`
+      document.getElementById('kpisGrid').innerHTML = kpis.map(([l, v, sub]) =>
+        `<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-val">${v}</div><div class="kpi-sub">${sub}</div></div>`
       ).join('');
 
       document.getElementById('matchesBody').innerHTML = data.matches.map(m => {
         const isNew = m.consultant_id && m.consultant_id.startsWith('CONS-IMP-');
         return `
         <tr>
-          <td><span class="score-pill ${m.score >= 80 ? 'score-high' : ''}">${m.score}%</span></td>
+          <td>
+            <div class="score-wrap">
+              <span class="score-pill ${m.score >= 80 ? 'score-high' : ''}">${m.score}%</span>
+              <div class="bar-bg"><div class="bar-fill" style="width:${m.score}%"></div></div>
+            </div>
+          </td>
           <td><strong>${m.consultant_name}</strong>${isNew ? ' <span class="badge" style="font-size:0.68rem;padding:2px 6px">Nouveau CV</span>' : ''}</td>
           <td>${m.client_name}<br><span style="color:var(--muted);font-size:0.79rem">${m.need_title}</span></td>
           <td>${m.matched_skills.map(s => `<span class="tag">${s}</span>`).join('')}</td>
@@ -425,7 +500,7 @@
     function renderDossier(d) {
       currentDossier = d;
       document.getElementById('dossierTitle').textContent = `Dossier — ${d.consultant_name}`;
-      document.getElementById('dossierBox').textContent = d.markdown;
+      document.getElementById('dossierBox').innerHTML = mdToHtml(d.markdown);
     }
 
     function renderCampaign(c) {
@@ -491,7 +566,6 @@
       await runPipeline();
     }
 
-    /* Modals */
     function openCvModal() {
       document.getElementById('cvModal').classList.add('open');
       if (!document.getElementById('cvTextInput').value) fillSampleCv();
@@ -502,11 +576,11 @@
       const d = await r.json();
       document.getElementById('cvTextInput').value = d.content;
     }
+
     function renderCvModalResult(data) {
       const p = data.profile;
       const top = (data.matches && data.matches.length) ? data.matches[0] : null;
-      const sumBox = document.getElementById('cvExtractedSummary');
-      sumBox.innerHTML = `
+      document.getElementById('cvExtractedSummary').innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
           <strong style="font-size:0.95rem;color:var(--accent)">${p.full_name} <span class="tag">${p.pseudo_id}</span></strong>
           ${top ? `<span class="score-pill ${top.score >= 80 ? 'score-high' : ''}">Meilleur Match : ${top.score}% (${top.client_name})</span>` : ''}
@@ -533,6 +607,7 @@
       toast(`${data.profile.full_name} structuré (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
       await runPipeline();
     }
+
     async function uploadCvFromModal(file) {
       if (!file) return;
       const fd = new FormData();
@@ -574,6 +649,15 @@
       a.download = `Dossier_${currentDossier.consultant_name.replace(/\s+/g, '_')}.md`;
       a.click();
     }
+
+    function printDossier() {
+      if (!currentDossier) return;
+      const w = window.open('', '_blank');
+      w.document.write(`<html><head><title>Dossier ${currentDossier.consultant_name}</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:32px auto;line-height:1.5;color:#111}h1{color:#059669}code{background:#f1f5f9;padding:2px 6px;border-radius:4px}</style></head><body>${mdToHtml(currentDossier.markdown)}</body></html>`);
+      w.document.close();
+      w.print();
+    }
+
     function copyEmail() {
       if (!currentCampaign) return;
       navigator.clipboard.writeText(currentCampaign.email_body);

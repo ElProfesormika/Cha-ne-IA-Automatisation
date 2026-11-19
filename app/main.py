@@ -29,9 +29,9 @@ from data.sample_data import SAMPLE_CV_TEXT
 load_dotenv()
 
 app = FastAPI(
-    title="NEOSIA AI & Automation Pipeline",
+    title="TalentFlow AI — Chaîne IA & Automatisation",
     description="Chaîne automatisée de bout en bout : Sourcing CV RGPD -> Matching -> Dossier de Compétences -> Prospection -> Dashboard",
-    version="1.1.0",
+    version="1.2.0",
 )
 
 app.add_middleware(
@@ -85,7 +85,7 @@ def health():
     has_key = bool(os.getenv("GEMINI_API_KEY", "").strip())
     return {
         "status": "ok",
-        "project": "NEOSIA AI & Automation",
+        "project": "TalentFlow AI",
         "mode": "gemini_live" if has_key else "deterministic_engine",
         "connectors": hub.get_connector_statuses(),
     }
@@ -226,12 +226,15 @@ def run_end_to_end_pipeline():
 
     pii_total = sum(e.entities_redacted for e in STATE["rgpd_events"])
     avg_score = round(sum(m.score for m in qualified) / max(len(qualified), 1), 1)
+    covered_needs = {m.need_id for m in matches if m.score >= 70}
+    needs_coverage_pct = round((len(covered_needs) / max(len(needs), 1)) * 100, 1)
     hours_saved = round(
         len(consultants) * 0.4
         + STATE["dossiers_generated"] * 1.2
         + STATE["campaigns_ready"] * 0.5,
         1,
     )
+    estimated_roi_eur = round(hours_saved * 65)
 
     kpis = WeeklyKpis(
         cvs_processed=len(consultants),
@@ -239,9 +242,11 @@ def run_end_to_end_pipeline():
         active_needs=len(needs),
         qualified_matches=len(qualified),
         avg_match_score=avg_score,
+        needs_coverage_pct=needs_coverage_pct,
         dossiers_generated=STATE["dossiers_generated"],
         campaigns_ready=STATE["campaigns_ready"],
         estimated_hours_saved=hours_saved,
+        estimated_roi_eur=estimated_roi_eur,
         connector_status=hub.get_connector_statuses(),
     )
 
