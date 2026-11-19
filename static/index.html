@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEOSIA — Chaîne IA & Automatisation</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #111827;
+      --border: #1f2937;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #10b981;
+      --accent2: #3b82f6;
+      --warn: #f59e0b;
+    }
+    * { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 24px; }
+    .container { max-width: 1240px; margin: 0 auto; }
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
+    h1 { margin: 0; font-size: 1.6rem; }
+    .subtitle { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    button { cursor: pointer; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 0.9rem; transition: 0.15s; }
+    .btn-primary { background: var(--accent); color: #052e16; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-secondary { background: #1e293b; color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: #334155; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .kpi-label { color: var(--muted); font-size: 0.8rem; }
+    .kpi-val { font-size: 1.7rem; font-weight: 700; margin-top: 6px; color: var(--accent); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+    .card h2 { margin: 0 0 12px 0; font-size: 1.08rem; display: flex; justify-content: space-between; align-items: center; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 600; }
+    .score-pill { padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; background: rgba(59,130,246,0.18); color: #60a5fa; }
+    .score-high { background: rgba(16,185,129,0.2); color: #34d399; }
+    pre { background: #090d16; border: 1px solid var(--border); border-radius: 8px; padding: 14px; white-space: pre-wrap; font-size: 0.84rem; line-height: 1.45; max-height: 320px; overflow-y: auto; }
+    .connectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .conn { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 0.85rem; }
+    .conn strong { display: block; margin-bottom: 4px; }
+    .conn span { color: var(--accent); font-size: 0.8rem; }
+    .rgpd-box { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 10px 12px; font-size: 0.84rem; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>NEOSIA — Chaîne IA & Automatisation <span class="badge" id="modeBadge">Chargement...</span></h1>
+        <div class="subtitle">Sourcing CV RGPD → Rapprochement Vivier/Besoins → Dossier de Compétences → Prospection → Pilotage Hebdo</div>
+      </div>
+      <div class="actions">
+        <button class="btn-secondary" onclick="importSampleCv()">+ Simuler Arrivée CV (RGPD)</button>
+        <label class="btn-secondary" style="padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">
+          Importer CV (.pdf/.txt)
+          <input type="file" id="cvFile" accept=".pdf,.txt,.md" style="display:none" onchange="uploadCv(this.files[0])" />
+        </label>
+        <button class="btn-primary" onclick="runPipeline()">▶ Exécuter la chaîne E2E</button>
+      </div>
+    </header>
+
+    <div class="connectors" id="connectorsGrid"></div>
+
+    <div class="kpis" id="kpisGrid"></div>
+
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>
+        <span>Rapprochement Besoins Clients ↔ Vivier Consultants (Scoring IA)</span>
+        <span style="font-size:0.8rem;color:var(--muted)" id="rgpdSummary">RGPD-by-Design actif</span>
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Consultant</th>
+            <th>Client & Besoin</th>
+            <th>Compétences alignées</th>
+            <th>Analyse</th>
+          </tr>
+        </thead>
+        <tbody id="matchesBody"></tbody>
+      </table>
+      <div id="rgpdLog" class="rgpd-box" style="display:none"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>
+          <span>Dossier de Compétences Auto-Généré</span>
+          <button class="btn-secondary" style="padding:5px 10px;font-size:0.78rem" onclick="downloadDossier()">Télécharger .md</button>
+        </h2>
+        <pre id="dossierBox">Exécutez la chaîne pour générer le dossier...</pre>
+      </div>
+      <div class="card">
+        <h2>
+          <span>Campagne de Prospection Personnalisée</span>
+          <button class="btn-secondary" style="padding:5px 10px;font-size:0.78rem" onclick="copyEmail()">Copier Email</button>
+        </h2>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:8px;" id="campaignSubject"></div>
+        <pre id="campaignBox">Exécutez la chaîne pour générer la campagne...</pre>
+        <div style="margin-top:10px;font-size:0.82rem;color:#93c5fd;" id="linkedinBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lastResult = null;
+
+    async function runPipeline() {
+      const res = await fetch('/api/run-e2e', { method: 'POST' });
+      const data = await res.json();
+      lastResult = data;
+      document.getElementById('modeBadge').textContent = data.mode === 'gemini_live' ? 'Gemini 2.5 Live' : 'Moteur Déterministe';
+
+      const connHtml = Object.entries(data.kpis.connector_status).map(([k, v]) =>
+        `<div class="conn"><strong>${k}</strong><span>● ${v}</span></div>`
+      ).join('');
+      document.getElementById('connectorsGrid').innerHTML = connHtml;
+
+      const k = data.kpis;
+      const kpis = [
+        ['CVs traités (hebdo)', k.cvs_processed],
+        ['PII masquées (RGPD)', k.rgpd_pii_masked],
+        ['Besoins actifs', k.active_needs],
+        ['Matchs qualifiés (≥65%)', k.qualified_matches],
+        ['Score moyen', k.avg_match_score + '%'],
+        ['Temps économisé', k.estimated_hours_saved + ' h']
+      ];
+      document.getElementById('kpisGrid').innerHTML = kpis.map(([l, v]) =>
+        `<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-val">${v}</div></div>`
+      ).join('');
+
+      document.getElementById('matchesBody').innerHTML = data.matches.map(m => `
+        <tr>
+          <td><span class="score-pill ${m.score >= 80 ? 'score-high' : ''}">${m.score}%</span></td>
+          <td><strong>${m.consultant_name}</strong></td>
+          <td>${m.client_name}<br><span style="color:var(--muted);font-size:0.8rem">${m.need_title}</span></td>
+          <td>${m.matched_skills.join(', ')}</td>
+          <td style="color:var(--muted);font-size:0.8rem">${m.rationale}</td>
+        </tr>
+      `).join('');
+
+      if (data.rgpd_events && data.rgpd_events.length > 0) {
+        const latest = data.rgpd_events[0];
+        const box = document.getElementById('rgpdLog');
+        box.style.display = 'block';
+        box.innerHTML = `<strong>Audit RGPD :</strong> ${latest.action} — ${latest.details}`;
+      }
+
+      if (data.sample_dossier) {
+        document.getElementById('dossierBox').textContent = data.sample_dossier.markdown;
+      }
+      if (data.sample_campaign) {
+        document.getElementById('campaignSubject').textContent = 'Objet : ' + data.sample_campaign.subject;
+        document.getElementById('campaignBox').textContent = data.sample_campaign.email_body;
+        document.getElementById('linkedinBox').textContent = 'Message LinkedIn suggéré : ' + data.sample_campaign.linkedin_dm;
+      }
+    }
+
+    async function importSampleCv() {
+      const sRes = await fetch('/api/sample-cv');
+      const sData = await sRes.json();
+      await fetch('/api/cv/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sData)
+      });
+      await runPipeline();
+    }
+
+    async function uploadCv(file) {
+      if (!file) return;
+      const fd = new FormData();
+      fd.append('file', file);
+      await fetch('/api/cv/upload', { method: 'POST', body: fd });
+      await runPipeline();
+    }
+
+    function downloadDossier() {
+      if (!lastResult || !lastResult.sample_dossier) return;
+      const blob = new Blob([lastResult.sample_dossier.markdown], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Dossier_${lastResult.sample_dossier.consultant_name.replace(/\s+/g, '_')}.md`;
+      a.click();
+    }
+
+    function copyEmail() {
+      if (!lastResult || !lastResult.sample_campaign) return;
+      navigator.clipboard.writeText(lastResult.sample_campaign.email_body);
+      alert('Email de prospection copié !');
+    }
+
+    runPipeline();
+  </script>
+</body>
+</html>
