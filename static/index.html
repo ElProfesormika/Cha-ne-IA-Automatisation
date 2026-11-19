@@ -279,6 +279,7 @@
         <button class="btn-primary" onclick="submitCustomCv()">Analyser & Anonymiser (RGPD)</button>
       </div>
       <div id="rgpdDiffResult" style="display:none;margin-top:14px;">
+        <div id="cvExtractedSummary" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.35);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.84rem"></div>
         <div class="grid" style="margin-bottom:0">
           <div>
             <label class="field">Avant (Données brutes)</label>
@@ -394,16 +395,18 @@
         `<div class="kpi"><div class="kpi-label">${l}</div><div class="kpi-val">${v}</div></div>`
       ).join('');
 
-      document.getElementById('matchesBody').innerHTML = data.matches.map(m => `
+      document.getElementById('matchesBody').innerHTML = data.matches.map(m => {
+        const isNew = m.consultant_id && m.consultant_id.startsWith('CONS-IMP-');
+        return `
         <tr>
           <td><span class="score-pill ${m.score >= 80 ? 'score-high' : ''}">${m.score}%</span></td>
-          <td><strong>${m.consultant_name}</strong></td>
+          <td><strong>${m.consultant_name}</strong>${isNew ? ' <span class="badge" style="font-size:0.68rem;padding:2px 6px">Nouveau CV</span>' : ''}</td>
           <td>${m.client_name}<br><span style="color:var(--muted);font-size:0.79rem">${m.need_title}</span></td>
           <td>${m.matched_skills.map(s => `<span class="tag">${s}</span>`).join('')}</td>
           <td style="color:var(--muted);font-size:0.79rem">${m.rationale}</td>
           <td><button class="btn-secondary btn-sm" onclick="generatePair('${m.consultant_id}','${m.need_id}')">Générer</button></td>
         </tr>
-      `).join('');
+      `}).join('');
 
       if (data.rgpd_events && data.rgpd_events.length > 0) {
         document.getElementById('rgpdHistory').innerHTML = data.rgpd_events.map(e => `
@@ -499,6 +502,24 @@
       const d = await r.json();
       document.getElementById('cvTextInput').value = d.content;
     }
+    function renderCvModalResult(data) {
+      const p = data.profile;
+      const top = (data.matches && data.matches.length) ? data.matches[0] : null;
+      const sumBox = document.getElementById('cvExtractedSummary');
+      sumBox.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+          <strong style="font-size:0.95rem;color:var(--accent)">${p.full_name} <span class="tag">${p.pseudo_id}</span></strong>
+          ${top ? `<span class="score-pill ${top.score >= 80 ? 'score-high' : ''}">Meilleur Match : ${top.score}% (${top.client_name})</span>` : ''}
+        </div>
+        <div style="color:var(--muted);margin-bottom:6px">${p.title} • ${p.years_exp} ans d'exp. • TJM ${p.tjm_eur}€ • ${p.availability} • ${p.location}</div>
+        <div>${p.skills.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+        ${top ? `<div style="margin-top:6px;color:var(--text)"><strong>Détail match :</strong> ${top.rationale}</div>` : ''}
+      `;
+      document.getElementById('rgpdDiffResult').style.display = 'block';
+      document.getElementById('diffBefore').textContent = data.original_preview;
+      document.getElementById('diffAfter').textContent = data.sanitized_preview;
+    }
+
     async function submitCustomCv() {
       const content = document.getElementById('cvTextInput').value.trim();
       if (!content) return;
@@ -508,10 +529,8 @@
         body: JSON.stringify({ filename: 'cv_personnalise.txt', content })
       });
       const data = await res.json();
-      document.getElementById('rgpdDiffResult').style.display = 'block';
-      document.getElementById('diffBefore').textContent = data.original_preview;
-      document.getElementById('diffAfter').textContent = data.sanitized_preview;
-      toast(`CV structuré (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
+      renderCvModalResult(data);
+      toast(`${data.profile.full_name} structuré (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
       await runPipeline();
     }
     async function uploadCvFromModal(file) {
@@ -521,10 +540,8 @@
       const res = await fetch('/api/cv/upload', { method: 'POST', body: fd });
       const data = await res.json();
       document.getElementById('cvTextInput').value = data.original_preview;
-      document.getElementById('rgpdDiffResult').style.display = 'block';
-      document.getElementById('diffBefore').textContent = data.original_preview;
-      document.getElementById('diffAfter').textContent = data.sanitized_preview;
-      toast(`Fichier ${file.name} analysé (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
+      renderCvModalResult(data);
+      toast(`${data.profile.full_name} analysé (${data.rgpd_event.entities_redacted} PII masquée(s)) !`);
       await runPipeline();
     }
 

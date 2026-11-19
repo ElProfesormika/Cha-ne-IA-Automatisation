@@ -16,9 +16,12 @@ from app.rgpd import sanitize_cv_for_llm
 
 KNOWN_SKILLS = [
     "Python", "FastAPI", "LLM", "Gemini", "Vertex AI", "LangChain", "RAG",
-    "Docker", "Kubernetes", "GCP", "Azure", "SQL", "PostgreSQL", "Airflow",
-    "dbt", "n8n", "Make", "Power Automate", "Microsoft 365", "CRM",
-    "BoondManager", "Power BI", "APIs", "RGPD",
+    "OpenAI", "Claude", "PyTorch", "TensorFlow", "Scikit-learn", "Pandas",
+    "Docker", "Kubernetes", "GCP", "Azure", "AWS", "Terraform", "Git", "CI/CD",
+    "SQL", "PostgreSQL", "Airflow", "dbt", "Spark", "Snowflake",
+    "n8n", "Make", "Power Automate", "Microsoft 365", "CRM", "HubSpot", "Salesforce",
+    "BoondManager", "Power BI", "PowerBI", "APIs", "REST", "RGPD",
+    "React", "TypeScript", "JavaScript", "Node.js", "Java", "MLOps", "IA", "Data",
 ]
 
 
@@ -45,6 +48,34 @@ def _call_gemini_text(prompt: str) -> str | None:
         return None
 
 
+def _extract_candidate_name(sanitized_text: str, filename: str) -> str:
+    # 1. Chercher un champ explicite "Nom : ..."
+    explicit = re.search(r"(?im)^(?:Nom(?:\s+complet)?|Candidat(?:e)?)\s*:\s*(.+)$", sanitized_text)
+    if explicit:
+        val = explicit.group(1).strip()
+        if val and "MASQUÉ" not in val.upper():
+            return val[:60]
+
+    # 2. Chercher dans les premières lignes nettoyées
+    skip_words = {"CURRICULUM", "VITAE", "CV", "PROFIL", "COMPÉTENCES", "EXPÉRIENCE", "EXPERIENCES", "FORMATION", "OBJECTIF"}
+    for ln in [l.strip() for l in sanitized_text.splitlines() if l.strip()][:10]:
+        cleaned = re.sub(r"\[[^\]]*MASQUÉ[^\]]*\]", "", ln).strip(" |-•:\t")
+        if not cleaned:
+            continue
+        first_token = re.split(r"[\s:]+", cleaned)[0].upper()
+        if first_token in skip_words:
+            continue
+        words = cleaned.split()
+        if 2 <= len(words) <= 4 and all(re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ'-]+$", w) for w in words):
+            return cleaned[:60]
+
+    # 3. Repli propre depuis le nom de fichier
+    stem = re.sub(r"\.[^.]+$", "", filename).replace("_", " ").replace("-", " ").strip()
+    if stem and stem.lower() not in {"cv", "cv personnalise", "cv candidat"}:
+        return stem.title()[:50]
+    return "Candidat(e) Importé(e)"
+
+
 def parse_and_score_cv(
     raw_cv_text: str, filename: str = "cv_import.txt"
 ) -> Tuple[ConsultantProfile, RgpdAuditEvent]:
@@ -52,16 +83,20 @@ def parse_and_score_cv(
     sanitized_text, rgpd_event = sanitize_cv_for_llm(raw_cv_text, source_label=filename)
 
     lines = [ln.strip() for ln in sanitized_text.splitlines() if ln.strip()]
-    candidate_name = "Candidat(e) Importé(e)"
-    for ln in lines[:5]:
-        if "CURRICULUM" not in ln.upper() and "MASQUÉ" not in ln.upper() and len(ln.split()) <= 4:
-            candidate_name = ln
-            break
+    candidate_name = _extract_candidate_name(sanitized_text, filename)
 
-    title_match = re.search(r"(?im)^Titre\s*:\s*(.+)$", sanitized_text)
-    title = title_match.group(1).strip() if title_match else "Consultant(e) Data / IA"
+    title_match = re.search(r"(?im)^(?:Titre|Poste|Profil)\s*:\s*(.+)$", sanitized_text)
+    if title_match:
+        title = title_match.group(1).strip()
+    else:
+        # Chercher une ligne descriptive (ex. "Ingénieur IA", "Développeur Python")
+        role_line = next(
+            (ln for ln in lines[:8] if re.search(r"(?:ingénieur|consultant|développeur|data|ia|architecte|chef de projet)", ln, re.I) and ln != candidate_name),
+            None,
+        )
+        title = role_line[:70] if role_line else "Consultant(e) Data / IA"
 
-    exp_match = re.search(r"(\d+)\s*ans?", sanitized_text, re.IGNORECASE)
+    exp_match = re.search(r"(\d{1,2})\s*ans?", sanitized_text, re.IGNORECASE)
     years_exp = int(exp_match.group(1)) if exp_match else 3
 
     tjm_match = re.search(r"(\d{3,4})\s*€", sanitized_text)
@@ -69,16 +104,17 @@ def parse_and_score_cv(
 
     found_skills = [
         sk for sk in KNOWN_SKILLS
-        if re.search(rf"\b{re.escape(sk)}\b", sanitized_text, re.IGNORECASE)
+        if re.search(rf"(?<!\w){re.escape(sk)}(?!\w)", sanitized_text, re.IGNORECASE)
     ]
     if not found_skills:
         found_skills = ["Python", "APIs"]
 
     exp_lines = [ln.lstrip("-• ").strip() for ln in lines if ln.startswith(("-", "•"))][:4]
 
+    uid = abs(hash(f"{filename}:{sanitized_text[:300]}")) % 9000 + 1000
     profile = ConsultantProfile(
-        id=f"CONS-IMP-{abs(hash(filename)) % 900 + 100}",
-        pseudo_id=f"NEOSIA-IMP-{abs(hash(filename)) % 90 + 10}",
+        id=f"CONS-IMP-{uid}",
+        pseudo_id=f"NEOSIA-IMP-{uid % 900 + 100}",
         full_name=candidate_name,
         title=title,
         years_exp=years_exp,

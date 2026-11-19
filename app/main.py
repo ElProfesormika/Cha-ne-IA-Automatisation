@@ -119,9 +119,11 @@ def parse_cv_text(req: RawCvRequest):
     if not any(c.id == profile.id for c in STATE["consultants"]):
         STATE["consultants"].insert(0, profile)
     STATE["rgpd_events"].insert(0, rgpd_event)
+    cv_matches = match_consultants_to_needs([profile], STATE["needs"])
     return {
         "profile": profile,
         "rgpd_event": rgpd_event,
+        "matches": cv_matches,
         "original_preview": req.content,
         "sanitized_preview": sanitized_preview,
     }
@@ -141,9 +143,11 @@ async def upload_cv_file(file: UploadFile = File(...)):
     if not any(c.id == profile.id for c in STATE["consultants"]):
         STATE["consultants"].insert(0, profile)
     STATE["rgpd_events"].insert(0, rgpd_event)
+    cv_matches = match_consultants_to_needs([profile], STATE["needs"])
     return {
         "profile": profile,
         "rgpd_event": rgpd_event,
+        "matches": cv_matches,
         "original_preview": text,
         "sanitized_preview": sanitized_preview,
     }
@@ -245,7 +249,7 @@ def run_end_to_end_pipeline():
     return E2EPipelineResponse(
         mode="gemini_live" if has_key else "deterministic_engine",
         kpis=kpis,
-        matches=matches[:12],
+        matches=matches[:30],
         rgpd_events=STATE["rgpd_events"],
         sample_dossier=sample_dossier,
         sample_campaign=sample_campaign,
