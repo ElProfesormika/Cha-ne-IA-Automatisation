@@ -263,5 +263,5 @@ def run_end_to_end_pipeline():
 
 @app.get("/")
 def serve_dashboard():
-    index_path = Path(__file__).parent.parent / "static" / "index.html"
+    index_path = Path(__file__).parent.parent / "public" / "index.html"
     return FileResponse(index_path)
